@@ -54,7 +54,7 @@ trait WithDuskRecordings
 
     public function storeRecording($browsers, $failure = false)
     {
-        if(!$this->shouldStoreRecording($failure)) {
+        if (!$this->shouldStoreRecording($failure)) {
             return;
         }
 
@@ -64,15 +64,20 @@ trait WithDuskRecordings
                 document.dispatchEvent(downloadRecordingEvent);"
             );
 
-            // Give the browser some time, to handle the file downloading process
-            $browser->pause(500);
+            // Give the browser some time to handle the file downloading process
+            $browser->pause(2000);
 
             $target_dir = config('dusk-recordings.target_directory');
-
             $sourceFile = "$this->downloadDir/test.webm";
             $name = $this->getCallerName();
 
-            rename($sourceFile, "$target_dir/$name.webm");
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0755, true);
+            }
+
+            if (file_exists($sourceFile)) {
+                rename($sourceFile, "$target_dir/$name.webm");
+            }
         });
     }
 
@@ -84,15 +89,17 @@ trait WithDuskRecordings
     public function getChromeArgs()
     {
         $extensionPath = __DIR__ . '/chrome';
-//        $extensionPath = base_path('vendor/brianclogan/dusk-recordings/src/chrome');
-        
+        $source = config('dusk-recordings.source', 'Entire Screen');
+
         return [
             '--enable-usermedia-screen-capturing',
-            "--auto-select-desktop-capture-source='Entire Screen'",
+            "--auto-select-desktop-capture-source={$source}",
+            '--use-fake-ui-for-media-stream',
             '--whitelisted-extension-id=cnphpifdbdiampamdipgobliknffgelk',
             "--load-extension=$extensionPath",
             '--disable-web-security',
-            '--allow-http-screen-capture'
+            '--allow-http-screen-capture',
+            '--disable-features=DialMediaRouteProvider',
         ];
     }
 
