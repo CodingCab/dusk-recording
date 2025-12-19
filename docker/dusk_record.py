@@ -150,7 +150,7 @@ def run_recording(test_file, output_name, recordings_dir):
     # Add image and command
     cmd.extend([
         IMAGE_NAME,
-        "record-test.sh", test_file, output_name
+        test_file, output_name
     ])
 
     print_color(Colors.YELLOW, "Starting recording container...")
