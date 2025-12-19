@@ -83,8 +83,9 @@ class ScreenRecorder:
 
         # Move temp file to final location
         if os.path.exists(self.temp_file):
+            import shutil
             Path(self.output_file).parent.mkdir(parents=True, exist_ok=True)
-            os.rename(self.temp_file, self.output_file)
+            shutil.move(self.temp_file, self.output_file)
             return self.output_file
 
         return None
