@@ -139,8 +139,9 @@ def run_recording(test_file, output_name, recordings_dir):
         "docker", "run", "--rm",
         "--name", container_name,
         "--shm-size=2g",
-        "-v", f"{project_dir}:/app:ro",
+        "-v", f"{project_dir}:/app",
         "-v", f"{os.path.abspath(recordings_dir)}:/recordings",
+        "--tmpfs", "/app/.phpunit.cache:rw,size=64m",
     ]
 
     # Add environment variables
