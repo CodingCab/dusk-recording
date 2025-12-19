@@ -105,6 +105,26 @@ class ServiceManager:
         return False
 
 
+def start_laravel_server(port=8000):
+    """Start Laravel development server."""
+    cmd = ["php", "artisan", "serve", "--host=0.0.0.0", f"--port={port}"]
+
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        env={**os.environ, "APP_URL": f"http://127.0.0.1:{port}"}
+    )
+
+    # Wait for server to be ready
+    time.sleep(3)
+
+    if proc.poll() is None:
+        print(f"Laravel server started on port {port}")
+        return proc
+    return None
+
+
 def run_recording(test_file, output_name, **kwargs):
     """Run the test recording script."""
     cmd = ["python3", "/usr/local/bin/record_test.py", test_file]
@@ -116,7 +136,11 @@ def run_recording(test_file, output_name, **kwargs):
         if value is not None:
             cmd.extend([f"--{key.replace('_', '-')}", str(value)])
 
-    result = subprocess.run(cmd)
+    # Set APP_URL for Laravel
+    env = os.environ.copy()
+    env["APP_URL"] = "http://127.0.0.1:8000"
+
+    result = subprocess.run(cmd, env=env)
     return result.returncode
 
 
@@ -205,6 +229,13 @@ The container will:
     if not services.start_chromedriver(args.chromedriver_port):
         print("ERROR: Failed to start ChromeDriver")
         sys.exit(1)
+
+    # Start Laravel server
+    laravel_proc = start_laravel_server(8000)
+    if not laravel_proc:
+        print("WARNING: Laravel server may not have started")
+    else:
+        services.processes.append(("Laravel", laravel_proc))
 
     print()
     print("Services ready. Starting test recording...")
