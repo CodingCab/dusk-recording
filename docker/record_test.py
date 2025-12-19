@@ -193,9 +193,8 @@ def main():
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_name = f"{base_name}_{timestamp}"
 
-    # Ensure .webm extension
-    if not output_name.endswith('.webm'):
-        output_name = output_name.replace('.mp4', '')
+    # Clean up extension
+    output_name = output_name.replace('.mp4', '').replace('.webm', '')
     output_file = f"/recordings/{output_name}.webm"
 
     # Print header

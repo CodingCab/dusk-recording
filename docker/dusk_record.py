@@ -228,9 +228,8 @@ Environment variables:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_name = f"{base_name}_{timestamp}"
 
-    # Ensure .webm extension
-    if not output_name.endswith('.webm'):
-        output_name = output_name.replace('.mp4', '') + '.webm'
+    # Clean up extension and ensure .webm
+    output_name = output_name.replace('.mp4', '').replace('.webm', '')
 
     # Get script directory for Dockerfile
     script_dir = Path(__file__).parent
@@ -243,7 +242,7 @@ Environment variables:
     print()
     print_header("Dusk Test Recorder")
     print(f"Test:       {args.test_file}")
-    print(f"Output:     {recordings_dir}/{output_name}.mp4")
+    print(f"Output:     {recordings_dir}/{output_name}.webm")
     print(f"Image:      {IMAGE_NAME}")
     print()
 
@@ -252,7 +251,7 @@ Environment variables:
 
     # Print results
     print()
-    recording_file = os.path.join(recordings_dir, f"{output_name}.mp4")
+    recording_file = os.path.join(recordings_dir, f"{output_name}.webm")
 
     if exit_code == 0:
         if os.path.exists(recording_file):
