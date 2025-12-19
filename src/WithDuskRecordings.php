@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Brianclogan\DuskRecordings;
+namespace CodingCab\DuskRecordings;
 
 
 use Closure;

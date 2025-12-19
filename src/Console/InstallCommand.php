@@ -1,6 +1,6 @@
 <?php
 
-namespace Brianclogan\DuskRecordings\Console;
+namespace CodingCab\DuskRecordings\Console;
 
 use Illuminate\Console\Command;
 
