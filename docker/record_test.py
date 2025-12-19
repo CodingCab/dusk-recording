@@ -30,7 +30,7 @@ class ScreenRecorder:
         self.resolution = resolution
         self.fps = fps
         self.process = None
-        self.temp_file = f"/tmp/recording_{os.getpid()}.mp4"
+        self.temp_file = f"/tmp/recording_{os.getpid()}.webm"
 
     def start(self):
         """Start screen recording."""
@@ -43,8 +43,9 @@ class ScreenRecorder:
             "-video_size", self.resolution,
             "-framerate", str(self.fps),
             "-i", self.display,
-            "-c:v", "libx264",
-            "-preset", "ultrafast",
+            "-c:v", "libvpx-vp9",
+            "-crf", "30",
+            "-b:v", "0",
             "-pix_fmt", "yuv420p",
             self.temp_file
         ]
@@ -192,7 +193,10 @@ def main():
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_name = f"{base_name}_{timestamp}"
 
-    output_file = f"/recordings/{output_name}.mp4"
+    # Ensure .webm extension
+    if not output_name.endswith('.webm'):
+        output_name = output_name.replace('.mp4', '')
+    output_file = f"/recordings/{output_name}.webm"
 
     # Print header
     print("=" * 50)

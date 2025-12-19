@@ -228,6 +228,10 @@ Environment variables:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         output_name = f"{base_name}_{timestamp}"
 
+    # Ensure .webm extension
+    if not output_name.endswith('.webm'):
+        output_name = output_name.replace('.mp4', '') + '.webm'
+
     # Get script directory for Dockerfile
     script_dir = Path(__file__).parent
 
